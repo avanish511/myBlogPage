@@ -141,6 +141,7 @@ This project is open source and available under the [MIT License](LICENSE).
 Made with ❤️ and poetry by Avanish
 
 ## Latest Updates
+
 - ✅ Dark theme by default
-- ✅ Fixed mobile hamburger menu  
+- ✅ Fixed mobile hamburger menu
 - ✅ Static build for Vercel compatibility
