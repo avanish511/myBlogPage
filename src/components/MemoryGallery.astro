@@ -262,7 +262,7 @@ const { showHeader = true } = Astro.props;
     // Primary: use API route to list files automatically
     let combined = await safeFetchJson("/api/memory-index");
 
-    // Fallback: legacy index.json files if API fails/empty
+    // Fallback: static index.json files if API fails/empty
     if (!combined.length) {
       const list1 = await safeFetchJson("/memoryLane/index.json");
       const list2 = await safeFetchJson("/memoLane/index.json");
