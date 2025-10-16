@@ -1,13 +1,13 @@
 # Poetry Corner - Avanish's Creative Space
 
-A beautiful, modern poetry blog built with Astro, featuring a macOS-inspired design with dark/light theme support and MongoDB integration for poem management.
+A beautiful, modern poetry blog built with Astro, featuring a macOS-inspired design with dark/light theme support and dynamic Memory Lane gallery.
 
 ## Features
 
 - 🎨 **macOS-inspired Design**: Clean, modern interface with smooth animations
 - 🌙 **Dark/Light Theme**: Toggle between themes with persistent preference
 - 📱 **Responsive**: Works perfectly on all devices
-- 🗄️ **MongoDB Integration**: Ready for dynamic poem management
+- 📸 **Dynamic Memory Lane**: Auto-discovering photo and video gallery
 - ⚡ **Fast Performance**: Built with Astro for optimal speed
 - 🚀 **Vercel Ready**: Configured for easy deployment
 
@@ -15,7 +15,7 @@ A beautiful, modern poetry blog built with Astro, featuring a macOS-inspired des
 
 - **Framework**: Astro
 - **Styling**: Tailwind CSS
-- **Database**: MongoDB
+- **API**: Astro API routes for dynamic content
 - **Deployment**: Vercel
 - **Language**: TypeScript
 
@@ -24,7 +24,6 @@ A beautiful, modern poetry blog built with Astro, featuring a macOS-inspired des
 ### Prerequisites
 
 - Node.js 18.20.8 or higher
-- MongoDB Atlas account (for production)
 - Vercel account (for deployment)
 
 ### Installation
@@ -42,19 +41,9 @@ cd blogPage
 npm install
 ```
 
-3. Set up environment variables:
+3. Add your images and videos to `public/memoryLane/` - they'll be auto-discovered!
 
-```bash
-cp env.example .env.local
-```
-
-4. Add your MongoDB URI to `.env.local`:
-
-```
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/poetry-blog?retryWrites=true&w=majority
-```
-
-5. Start the development server:
+4. Start the development server:
 
 ```bash
 npm run dev
@@ -72,7 +61,7 @@ src/
 ├── layouts/
 │   └── Layout.astro    # Main layout with theme system
 ├── lib/
-│   └── mongodb.ts      # Database connection and helpers
+│   └── memory-index.ts # Auto-discovery API for Memory Lane
 ├── pages/
 │   ├── api/            # API routes for poem management
 │   ├── index.astro     # Home page
@@ -82,47 +71,18 @@ src/
 └── styles/             # Global styles
 ```
 
-## MongoDB Schema
+## Memory Lane API
 
-### Poems Collection
+The Memory Lane gallery automatically discovers images and videos from `public/memoryLane/` and `public/memoLane/` directories. Supported formats:
 
-```typescript
-interface Poem {
-  _id?: string;
-  title: string;
-  content: string;
-  category: "love" | "nature" | "life" | "dreams";
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  published: boolean;
-  featured?: boolean;
-}
-```
+- **Images**: `.jpg`, `.jpeg`, `.png`, `.webp`, `.avif`
+- **Videos**: `.mp4`, `.webm`, `.ogg`, `.mov`
 
-### Memories Collection
-
-```typescript
-interface Memory {
-  _id?: string;
-  title: string;
-  description: string;
-  content: string;
-  imageUrl?: string;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  published: boolean;
-}
-```
+The API route `/api/memory-index` provides a JSON list of all media files for the gallery.
 
 ## API Endpoints
 
-- `GET /api/poems` - Fetch all poems (with optional category filter)
-- `POST /api/poems` - Create a new poem
-- `GET /api/poems/[id]` - Fetch a specific poem
-- `PUT /api/poems/[id]` - Update a poem
-- `DELETE /api/poems/[id]` - Delete a poem
+- `GET /api/memory-index` - Fetch all media files from Memory Lane directories
 
 ## Deployment
 
@@ -130,20 +90,17 @@ interface Memory {
 
 1. Push your code to GitHub
 2. Connect your repository to Vercel
-3. Add environment variables in Vercel dashboard:
-   - `MONGODB_URI`: Your MongoDB connection string
-4. Deploy!
+3. Deploy!
 
 ### Environment Variables
 
-- `MONGODB_URI`: MongoDB connection string
-- `NODE_ENV`: Set to 'production' for production builds
+- `NODE_ENV`: Set to 'production' for production builds (optional)
 
 ## Customization
 
 ### Adding New Poems
 
-You can add poems through the API or directly in the MongoDB database. The poems will automatically appear in the Poetry Explorer.
+Poems are currently hardcoded in the components. You can edit them directly in `src/pages/poems.astro` and `src/components/PoetryExplorer.astro`.
 
 ### Styling
 
