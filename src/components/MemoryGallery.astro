@@ -1,0 +1,551 @@
+---
+const { showHeader = true } = Astro.props;
+---
+
+<section
+  class="py-20 px-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900"
+>
+  <div class="max-w-6xl mx-auto">
+    {
+      showHeader && (
+        <div class="text-center mb-8">
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">
+            Memory Lane
+          </h2>
+          <p class="text-sm md:text-base text-gray-600 dark:text-gray-300">
+            A gallery of moments
+          </p>
+        </div>
+      )
+    }
+
+    <!-- Top Video Carousel (shows only if videos exist) -->
+    <div id="video-carousel-wrap" class="hidden mb-8">
+      <div
+        class="relative rounded-2xl overflow-hidden border border-gray-200/60 dark:border-gray-700/60 shadow-xl bg-black"
+      >
+        <video
+          id="video-carousel"
+          class="w-full h-[36vh] md:h-[44vh] object-cover"
+          muted
+          playsinline
+          preload="metadata"></video>
+        <button
+          type="button"
+          onclick="window.openVideoModal(window.__currentCarouselSrc)"
+          class="absolute inset-0"
+          aria-label="Open video"></button>
+        <div
+          class="absolute bottom-3 right-3 text-xs px-2 py-1 rounded-full bg-black/60 text-white tracking-wider"
+        >
+          PREVIEW
+        </div>
+      </div>
+    </div>
+
+    <!-- macOS-style window container -->
+    <div
+      class="bg-gray-100 dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200/60 dark:border-gray-700/60"
+    >
+      <!-- Title bar -->
+      <div
+        class="flex items-center gap-2 px-4 py-3 border-b border-gray-200/60 dark:border-gray-700/60 bg-white/70 dark:bg-gray-900/50 backdrop-blur-md"
+      >
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-red-500"></span>
+          <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500"></span>
+        </div>
+        <div
+          class="mx-auto text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          Photos · Memory Lane
+        </div>
+      </div>
+
+      <!-- Scrollable content -->
+      <div class="h-[70vh] md:h-[75vh] overflow-y-auto">
+        <div class="p-4 md:p-6 space-y-8">
+          <!-- Portraits: 3 per row on large screens -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3
+                class="text-sm font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400"
+              >
+                Portraits
+              </h3>
+              <span
+                id="portrait-count"
+                class="text-xs text-gray-500 dark:text-gray-400"></span>
+            </div>
+            <div
+              id="portrait-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+            >
+            </div>
+          </div>
+
+          <!-- Landscapes: 2 per row on large screens -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3
+                class="text-sm font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400"
+              >
+                Landscapes
+              </h3>
+              <span
+                id="landscape-count"
+                class="text-xs text-gray-500 dark:text-gray-400"></span>
+            </div>
+            <div
+              id="landscape-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6"
+            >
+            </div>
+          </div>
+
+          <!-- Videos: inline playback if present -->
+          <div id="videos-section" class="hidden">
+            <div class="flex items-center justify-between mb-3">
+              <h3
+                class="text-sm font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400"
+              >
+                Videos
+              </h3>
+              <span
+                id="video-count"
+                class="text-xs text-gray-500 dark:text-gray-400"></span>
+            </div>
+            <div
+              id="video-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6"
+            >
+            </div>
+          </div>
+
+          <div
+            id="memory-empty"
+            class="hidden text-center text-gray-500 dark:text-gray-400 text-sm"
+          >
+            No images found. Add images in public/memoryLane and refresh.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Fullscreen Photo Modal -->
+<div
+  id="memory-modal"
+  class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden items-center justify-center p-2 md:p-6"
+>
+  <button
+    type="button"
+    onclick="window.closeMemoryModal()"
+    class="absolute top-3 right-3 md:top-6 md:right-6 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"></path></svg
+    >
+  </button>
+  <button
+    type="button"
+    onclick="window.prevMemory()"
+    class="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white items-center justify-center"
+    aria-label="Previous"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M15 19l-7-7 7-7"></path></svg
+    >
+  </button>
+  <button
+    type="button"
+    onclick="window.nextMemory()"
+    class="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white items-center justify-center"
+    aria-label="Next"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 5l7 7-7 7"></path></svg
+    >
+  </button>
+  <img
+    id="memory-photo"
+    src=""
+    alt="Memory photo"
+    class="max-w-[92vw] max-h-[88vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
+  />
+</div>
+
+<!-- Fullscreen Video Modal (with sound) -->
+<div
+  id="video-modal"
+  class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden items-center justify-center p-2 md:p-6"
+>
+  <button
+    type="button"
+    onclick="window.closeVideoModal()"
+    class="absolute top-3 right-3 md:top-6 md:right-6 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"></path></svg
+    >
+  </button>
+  <button
+    type="button"
+    onclick="window.prevVideo()"
+    class="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white items-center justify-center"
+    aria-label="Previous"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M15 19l-7-7 7-7"></path></svg
+    >
+  </button>
+  <button
+    type="button"
+    onclick="window.nextVideo()"
+    class="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white items-center justify-center"
+    aria-label="Next"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 5l7 7-7 7"></path></svg
+    >
+  </button>
+  <video
+    id="video-player"
+    class="max-w-[92vw] max-h-[88vh] w-auto h-auto rounded-xl shadow-2xl"
+    controls></video>
+</div>
+
+<script>
+  let __allImages = [];
+  let __currentImageIndex = -1;
+  let __allVideos = [];
+  let __currentVideoIndex = -1;
+
+  async function safeFetchJson(url) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function loadMemoryLane() {
+    // Primary: use API route to list files automatically
+    let combined = await safeFetchJson("/api/memory-index");
+
+    // Fallback: legacy index.json files if API fails/empty
+    if (!combined.length) {
+      const list1 = await safeFetchJson("/memoryLane/index.json");
+      const list2 = await safeFetchJson("/memoLane/index.json");
+      combined = [...new Set([...(list1 || []), ...(list2 || [])])];
+    }
+
+    if (!combined.length) {
+      document.getElementById("memory-empty")?.classList.remove("hidden");
+      return;
+    }
+
+    const imageExts = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
+    const videoExts = [".mp4", ".webm", ".ogg", ".mov"];
+
+    const images = combined.filter((name) =>
+      imageExts.some((ext) => name.toLowerCase().endsWith(ext))
+    );
+    const videos = combined.filter((name) =>
+      videoExts.some((ext) => name.toLowerCase().endsWith(ext))
+    );
+
+    // Save for navigation
+    __allVideos = videos;
+
+    // Load sizes for images (videos will be inline without modal)
+    const entries = await Promise.all(images.map(loadWithSize));
+    const portraits = entries.filter((e) => e && e.h > e.w);
+    const landscapes = entries.filter((e) => e && e.w >= e.h);
+
+    // Save image order for navigation (portraits then landscapes)
+    __allImages = [...portraits, ...landscapes].map((e) => e.url);
+
+    renderGrid("portrait-grid", portraits, { portrait: true });
+    renderGrid("landscape-grid", landscapes, { portrait: false });
+
+    document.getElementById("portrait-count").textContent =
+      `${portraits.length} items`;
+    document.getElementById("landscape-count").textContent =
+      `${landscapes.length} items`;
+
+    // Render videos if any
+    if (videos.length) {
+      const videoSection = document.getElementById("videos-section");
+      videoSection.classList.remove("hidden");
+      document.getElementById("video-count").textContent =
+        `${videos.length} items`;
+      renderVideos("video-grid", videos);
+      initVideoCarousel(videos);
+    }
+
+    if (portraits.length + landscapes.length + videos.length === 0) {
+      document.getElementById("memory-empty")?.classList.remove("hidden");
+    }
+  }
+
+  function loadWithSize(name) {
+    return new Promise((resolve) => {
+      // Try to resolve from memoryLane first, then memoLane
+      const url1 = `/memoryLane/${encodeURIComponent(name)}`;
+      const url2 = `/memoLane/${encodeURIComponent(name)}`;
+      const img = new Image();
+      img.onload = function () {
+        resolve({ url: img.src, w: this.width, h: this.height, name });
+      };
+      img.onerror = function () {
+        // Try the alternate path once
+        if (img.src !== url2) {
+          img.src = url2;
+        } else {
+          resolve(null);
+        }
+      };
+      img.src = url1;
+    });
+  }
+
+  function renderGrid(gridId, items, opts) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = "";
+    items.forEach(({ url, w, h, name }) => {
+      const tile = document.createElement("div");
+      tile.className = "group cursor-pointer";
+      tile.onclick = () => window.openMemoryModal(url);
+
+      const heightCls = opts.portrait
+        ? "h-[34rem] md:h-[38rem]"
+        : "h-80 md:h-96";
+      tile.innerHTML = `
+        <div class=\"bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200/60 dark:border-gray-700/60 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1\">
+          <img src=\"${url}\" alt=\"${name}\" class=\"w-full ${heightCls} object-cover group-hover:scale-[1.02] transition-transform duration-300\" loading=\"lazy\" />
+        </div>
+      `;
+      grid.appendChild(tile);
+    });
+  }
+
+  function renderVideos(gridId, videoNames) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = "";
+    videoNames.forEach((name, index) => {
+      const url1 = `/memoryLane/${encodeURIComponent(name)}`;
+      const url2 = `/memoLane/${encodeURIComponent(name)}`;
+      const container = document.createElement("div");
+      container.className =
+        "bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200/60 dark:border-gray-700/60 shadow-lg cursor-pointer";
+      container.onclick = () => window.openVideoModal(url1, index);
+      container.innerHTML = `
+        <div class=\"relative\">
+          <video class=\"w-full h-64 md:h-80 object-cover\" muted loop playsinline preload=\"metadata\">
+            <source src=\"${url1}\" />
+          </video>
+          <div class=\"absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded-full bg-black/60 text-white\">PREVIEW</div>
+        </div>
+      `;
+      const videoEl = container.querySelector("video");
+      videoEl.onerror = () => {
+        const source = videoEl.querySelector("source");
+        if (source && source.src !== window.location.origin + url2) {
+          source.src = url2;
+          videoEl.load();
+        }
+      };
+      videoEl.oncanplay = () => {
+        try {
+          videoEl.play().catch(() => {});
+        } catch (_) {}
+      };
+      grid.appendChild(container);
+    });
+  }
+
+  function initVideoCarousel(videoNames) {
+    const wrap = document.getElementById("video-carousel-wrap");
+    const el = document.getElementById("video-carousel");
+    if (!el || !wrap || !videoNames.length) return;
+    wrap.classList.remove("hidden");
+
+    let idx = 0;
+    function srcFor(name) {
+      return `/memoryLane/${encodeURIComponent(name)}`;
+    }
+
+    function setSource(i) {
+      const name = videoNames[i];
+      let url = srcFor(name);
+      window.__currentCarouselSrc = url;
+      el.src = url;
+      el.load();
+      el.muted = true;
+      el.playsInline = true;
+      el.loop = true;
+      el.oncanplay = () => {
+        try {
+          el.play().catch(() => {});
+        } catch (_) {}
+      };
+    }
+
+    setSource(idx);
+    setInterval(() => {
+      idx = (idx + 1) % videoNames.length;
+      setSource(idx);
+    }, 7000);
+  }
+
+  function openMemoryModal(src) {
+    const modal = document.getElementById("memory-modal");
+    const img = document.getElementById("memory-photo");
+    __currentImageIndex = __allImages.indexOf(src);
+    if (__currentImageIndex < 0) __currentImageIndex = 0;
+    img.src = __allImages[__currentImageIndex] || src;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeMemoryModal() {
+    const modal = document.getElementById("memory-modal");
+    const img = document.getElementById("memory-photo");
+    img.src = "";
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.style.overflow = "auto";
+  }
+
+  function prevMemory() {
+    if (!__allImages.length) return;
+    __currentImageIndex =
+      (__currentImageIndex - 1 + __allImages.length) % __allImages.length;
+    document.getElementById("memory-photo").src =
+      __allImages[__currentImageIndex];
+  }
+  function nextMemory() {
+    if (!__allImages.length) return;
+    __currentImageIndex = (__currentImageIndex + 1) % __allImages.length;
+    document.getElementById("memory-photo").src =
+      __allImages[__currentImageIndex];
+  }
+
+  function openVideoModal(src, index = 0) {
+    const modal = document.getElementById("video-modal");
+    const vid = document.getElementById("video-player");
+    __currentVideoIndex = index;
+    vid.src = src;
+    vid.muted = false;
+    vid.autoplay = true;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+    try {
+      vid.play().catch(() => {});
+    } catch (_) {}
+  }
+
+  function closeVideoModal() {
+    const modal = document.getElementById("video-modal");
+    const vid = document.getElementById("video-player");
+    try {
+      vid.pause();
+    } catch (_) {}
+    vid.src = "";
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.style.overflow = "auto";
+  }
+
+  function prevVideo() {
+    if (!__allVideos.length) return;
+    __currentVideoIndex =
+      (__currentVideoIndex - 1 + __allVideos.length) % __allVideos.length;
+    const name = __allVideos[__currentVideoIndex];
+    const url = `/memoryLane/${encodeURIComponent(name)}`;
+    const vid = document.getElementById("video-player");
+    vid.src = url;
+    try {
+      vid.play().catch(() => {});
+    } catch (_) {}
+  }
+  function nextVideo() {
+    if (!__allVideos.length) return;
+    __currentVideoIndex = (__currentVideoIndex + 1) % __allVideos.length;
+    const name = __allVideos[__currentVideoIndex];
+    const url = `/memoryLane/${encodeURIComponent(name)}`;
+    const vid = document.getElementById("video-player");
+    vid.src = url;
+    try {
+      vid.play().catch(() => {});
+    } catch (_) {}
+  }
+
+  window.openMemoryModal = openMemoryModal;
+  window.closeMemoryModal = closeMemoryModal;
+  window.prevMemory = prevMemory;
+  window.nextMemory = nextMemory;
+  window.openVideoModal = openVideoModal;
+  window.closeVideoModal = closeVideoModal;
+  window.prevVideo = prevVideo;
+  window.nextVideo = nextVideo;
+
+  document
+    .getElementById("memory-modal")
+    ?.addEventListener("click", function (e) {
+      if (e.target === this) closeMemoryModal();
+    });
+  document
+    .getElementById("video-modal")
+    ?.addEventListener("click", function (e) {
+      if (e.target === this) closeVideoModal();
+    });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeMemoryModal();
+      closeVideoModal();
+    }
+    if (!document.getElementById("memory-modal").classList.contains("hidden")) {
+      if (e.key === "ArrowLeft") prevMemory();
+      if (e.key === "ArrowRight") nextMemory();
+    }
+    if (!document.getElementById("video-modal").classList.contains("hidden")) {
+      if (e.key === "ArrowLeft") prevVideo();
+      if (e.key === "ArrowRight") nextVideo();
+    }
+  });
+
+  loadMemoryLane();
+</script>

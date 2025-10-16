@@ -1,0 +1,58 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Welcome to Avanish's Poetry Corner - Where words dance with emotions",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+
+    <!-- Theme Script (must be in head to prevent flash) -->
+    <script is:inline>
+      (function () {
+        const theme = localStorage.getItem("theme") || "light";
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      })();
+    </script>
+  </head>
+  <body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300"
+  >
+    <div id="app" class="min-h-screen">
+      <slot />
+    </div>
+
+    <!-- Theme Toggle Script -->
+    <script>
+      function toggleTheme() {
+        const html = document.documentElement;
+        const isDark = html.classList.contains("dark");
+
+        if (isDark) {
+          html.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+        } else {
+          html.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+        }
+      }
+
+      // Make toggleTheme globally available
+      window.toggleTheme = toggleTheme;
+    </script>
+  </body>
+</html>

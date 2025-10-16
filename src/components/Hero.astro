@@ -1,0 +1,141 @@
+---
+// Hero section with beautiful gradient background and Avanish's personal touch
+---
+
+<section
+  class="relative min-h-screen flex items-center justify-center overflow-hidden"
+>
+  <!-- Background with your image and purple gradients -->
+  <div class="absolute inset-0">
+    <!-- Main background image -->
+    <div
+      class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      style="background-image: url('/firstPageBackground.jpeg');"
+    >
+    </div>
+
+    <!-- Purple gradient overlay at top -->
+    <div
+      class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-purple-600/80 to-transparent"
+    >
+    </div>
+
+    <!-- Purple gradient overlay at bottom -->
+    <div
+      class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-purple-600/80 to-transparent"
+    >
+    </div>
+
+    <!-- Subtle pattern overlay -->
+    <div class="absolute inset-0 opacity-20">
+      <div
+        class="absolute top-20 left-20 w-2 h-2 bg-white rounded-full animate-bounce-gentle"
+      >
+      </div>
+      <div
+        class="absolute top-40 right-32 w-1 h-1 bg-white rounded-full animate-bounce-gentle"
+        style="animation-delay: 0.5s;"
+      >
+      </div>
+      <div
+        class="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-white rounded-full animate-bounce-gentle"
+        style="animation-delay: 1s;"
+      >
+      </div>
+      <div
+        class="absolute bottom-20 right-20 w-2 h-2 bg-white rounded-full animate-bounce-gentle"
+        style="animation-delay: 1.5s;"
+      >
+      </div>
+      <div
+        class="absolute top-1/2 left-10 w-1 h-1 bg-white rounded-full animate-bounce-gentle"
+        style="animation-delay: 2s;"
+      >
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div
+    class="relative z-10 text-center text-white px-4 md:px-6 max-w-4xl mx-auto"
+  >
+    <div class="animate-fade-in">
+      <h1
+        class="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 text-shadow-lg"
+      >
+        Avanish's Corner
+      </h1>
+      <p
+        class="text-lg sm:text-xl md:text-2xl font-bold mb-6 md:mb-8 opacity-90"
+      >
+        Where words dance with emotions
+      </p>
+      <p
+        class="text-base sm:text-lg md:text-xl opacity-80 max-w-3xl mx-auto leading-relaxed"
+      >
+        नमस्ते! मैं अवनीश हूँ<br />
+        यह स्थान मेरी कविताओं और विचारों के लिए है। हर लेखन मेरे मन का एक टुकड़ा
+        है!
+      </p>
+      <p class="text-sm sm:text-base md:text-lg mt-4 opacity-70 px-2">
+        Welcome to my little corner of the internet, where I share my thoughts,
+        emotions, and experiences through the art of poetry. Each verse is a
+        piece of my heart.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div
+        class="mt-8 md:mt-12 flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4"
+      >
+        <a
+          href="/poems"
+          class="inline-flex items-center justify-center px-6 md:px-8 py-3 md:py-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-medium hover:bg-white/30 transition-all duration-300 hover:scale-105 touch-target"
+        >
+          Explore Poems
+          <svg
+            class="ml-2 w-4 h-4 md:w-5 md:h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+        </a>
+        <a
+          href="/about"
+          class="inline-flex items-center justify-center px-6 md:px-8 py-3 md:py-4 bg-transparent border-2 border-white/50 rounded-full text-white font-medium hover:bg-white/10 transition-all duration-300 hover:scale-105 touch-target"
+        >
+          About Me
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div
+    class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+  >
+    <svg
+      class="w-6 h-6 text-white/70"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
+  </div>
+</section>
+
+<style>
+  .text-shadow-lg {
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+</style>

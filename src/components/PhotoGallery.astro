@@ -1,0 +1,194 @@
+---
+// Photo Gallery component with scrollable images and popup functionality
+const photos = [
+  { src: '/WhatsApp Image 2025-10-16 at 11.15.51 AM.jpeg', title: 'Beautiful Landscape', description: 'Nature\'s masterpiece' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.34 AM.jpeg', title: 'Serene Moments', description: 'Peaceful reflections' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.36 AM.jpeg', title: 'Golden Hour', description: 'Magic hour light' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.37 AM.jpeg', title: 'Urban Stories', description: 'City life captured' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.39 AM (1).jpeg', title: 'Natural Beauty', description: 'Untouched wilderness' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.39 AM (2).jpeg', title: 'Mountain Views', description: 'Peak experiences' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.39 AM.jpeg', title: 'Coastal Dreams', description: 'Ocean\'s embrace' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.40 AM (1).jpeg', title: 'Forest Paths', description: 'Nature\'s corridors' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.40 AM (2).jpeg', title: 'Sunset Serenade', description: 'Day\'s farewell' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.40 AM.jpeg', title: 'Morning Light', description: 'Dawn\'s promise' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.41 AM (1).jpeg', title: 'Wildlife Encounters', description: 'Nature\'s inhabitants' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.41 AM (2).jpeg', title: 'Cultural Heritage', description: 'Timeless traditions' },
+  { src: '/WhatsApp Image 2025-10-16 at 11.17.41 AM.jpeg', title: 'Adventure Awaits', description: 'Journey begins' }
+];
+---
+
+<section class="py-20 px-6 bg-white dark:bg-gray-900">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+        Photo Gallery
+      </h2>
+      <p class="text-xl text-gray-600 dark:text-gray-300">
+        Moments captured through my lens
+      </p>
+    </div>
+    
+    <!-- Scrollable Photo Grid -->
+    <div class="relative">
+      <!-- Scrollable container -->
+      <div class="overflow-x-auto scrollbar-hide pb-4 photo-gallery-scroll">
+        <div class="flex space-x-4 md:space-x-6 min-w-max px-4 md:px-0">
+          {photos.map((photo, index) => (
+            <div class="flex-shrink-0 w-72 h-56 md:w-80 md:h-64 group cursor-pointer touch-target" 
+                 onclick={`openPhotoModal('${photo.src}', '${photo.title}', '${photo.description}')`}>
+              <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                <img 
+                  src={photo.src} 
+                  alt={photo.title}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 landscape-photo"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+                <div class="absolute bottom-4 left-4 right-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 class="text-lg font-semibold mb-1">{photo.title}</h3>
+                  <p class="text-sm opacity-90">{photo.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <!-- Scroll indicators (hidden on mobile) -->
+      <div class="scroll-indicators absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 w-8 h-8 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+        <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </div>
+      <div class="scroll-indicators absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 w-8 h-8 bg-white/80 dark:bg-gray-800/80 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+        <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Photo Modal -->
+<div id="photo-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden items-center justify-center p-2 md:p-4">
+  <div class="relative max-w-6xl max-h-[95vh] w-full modal-mobile">
+    <button 
+      onclick="closePhotoModal()" 
+      class="absolute top-2 right-2 md:top-4 md:right-4 z-10 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors touch-target"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-2xl">
+      <div class="relative">
+        <img 
+          id="modal-photo" 
+          src="" 
+          alt="" 
+          class="w-full h-auto max-h-[80vh] md:max-h-[70vh] object-contain"
+        />
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 md:p-6">
+          <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-white mb-2"></h3>
+          <p id="modal-description" class="text-white/90 text-sm md:text-base"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openPhotoModal(imageSrc, title, description) {
+    const modal = document.getElementById('photo-modal');
+    const modalPhoto = document.getElementById('modal-photo');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDescription = document.getElementById('modal-description');
+    
+    modalPhoto.src = imageSrc;
+    modalPhoto.alt = title;
+    modalTitle.textContent = title;
+    modalDescription.textContent = description;
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePhotoModal() {
+    const modal = document.getElementById('photo-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    
+    // Restore body scroll
+    document.body.style.overflow = 'auto';
+  }
+
+  // Close modal when clicking outside
+  document.getElementById('photo-modal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+      closePhotoModal();
+    }
+  });
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closePhotoModal();
+    }
+  });
+
+  // Touch/swipe support for mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  document.getElementById('photo-modal')?.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+
+  document.getElementById('photo-modal')?.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - could implement next photo
+        console.log('Swipe left');
+      } else {
+        // Swipe right - could implement previous photo
+        console.log('Swipe right');
+      }
+    }
+  }
+</script>
+
+<style>
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Smooth scrolling for mobile */
+  .photo-gallery-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Better touch targets for mobile */
+  @media (max-width: 768px) {
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+</style>
