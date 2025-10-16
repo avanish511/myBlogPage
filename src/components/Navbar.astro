@@ -132,26 +132,40 @@
 </nav>
 
 <script>
-  function toggleMobileMenu() {
+  // Define functions immediately in global scope
+  window.toggleMobileMenu = function() {
     const menu = document.getElementById("mobile-menu");
     if (menu) {
       menu.classList.toggle("hidden");
     }
-  }
+  };
 
-  function closeMobileMenu() {
+  window.closeMobileMenu = function() {
     const menu = document.getElementById("mobile-menu");
     if (menu) {
       menu.classList.add("hidden");
     }
+  };
+
+  function toggleMobileMenu() {
+    return window.toggleMobileMenu();
+  }
+
+  function closeMobileMenu() {
+    return window.closeMobileMenu();
   }
 
   // Wait for DOM to be ready
   document.addEventListener("DOMContentLoaded", function() {
+    console.log("Navbar script: DOMContentLoaded fired");
+    
     // Add click listener to mobile menu button
     const mobileButton = document.getElementById("mobile-menu-button");
+    console.log("Mobile button found:", mobileButton);
+    
     if (mobileButton) {
       mobileButton.addEventListener("click", toggleMobileMenu);
+      console.log("Event listener added to mobile button");
     }
 
     // Add click listeners to mobile menu links
