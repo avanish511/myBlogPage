@@ -76,8 +76,8 @@
 
         <!-- Mobile Menu Button -->
         <button
+          id="mobile-menu-button"
           class="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-          onclick="toggleMobileMenu()"
           aria-label="Toggle mobile menu"
         >
           <svg
@@ -104,29 +104,25 @@
       <div class="py-4 space-y-2">
         <a
           href="/"
-          class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-          onclick="closeMobileMenu()"
+          class="mobile-menu-link block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
         >
           Home
         </a>
         <a
           href="/poems"
-          class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-          onclick="closeMobileMenu()"
+          class="mobile-menu-link block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
         >
           Poems
         </a>
         <a
           href="/memories"
-          class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-          onclick="closeMobileMenu()"
+          class="mobile-menu-link block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
         >
           Memories
         </a>
         <a
           href="/about"
-          class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-          onclick="closeMobileMenu()"
+          class="mobile-menu-link block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
         >
           About
         </a>
@@ -150,17 +146,32 @@
     }
   }
 
-  // Make functions globally available
-  window.toggleMobileMenu = toggleMobileMenu;
-  window.closeMobileMenu = closeMobileMenu;
-
-  // Close mobile menu when clicking outside
-  document.addEventListener("click", function (event) {
-    const menu = document.getElementById("mobile-menu");
-    const mobileButton = document.querySelector('button[onclick="toggleMobileMenu()"]');
-
-    if (menu && !menu.contains(event.target) && !mobileButton?.contains(event.target)) {
-      menu.classList.add("hidden");
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", function() {
+    // Add click listener to mobile menu button
+    const mobileButton = document.getElementById("mobile-menu-button");
+    if (mobileButton) {
+      mobileButton.addEventListener("click", toggleMobileMenu);
     }
+
+    // Add click listeners to mobile menu links
+    const mobileLinks = document.querySelectorAll(".mobile-menu-link");
+    mobileLinks.forEach(link => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener("click", function (event) {
+      const menu = document.getElementById("mobile-menu");
+      const mobileButton = document.getElementById("mobile-menu-button");
+
+      if (
+        menu &&
+        !menu.contains(event.target) &&
+        !mobileButton?.contains(event.target)
+      ) {
+        menu.classList.add("hidden");
+      }
+    });
   });
 </script>
